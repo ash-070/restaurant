@@ -59,49 +59,49 @@ export default function Restaurant(){
         }
     }
 async function sendToServer(data) {
+    const token = localStorage.getItem('token'); 
+
     try {
-const response = await fetch("http://127.0.0.1:8000/api/reservations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    });
+        const response = await fetch("http://127.0.0.1:8000/api/reservations", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+            },
+            body: JSON.stringify(data)
+        });
         const result = await response.json();
-       
+        console.log("Response:", result);
         
     } catch (error) {
-       
+       console.log("Error:", error);
     }
 }
 
-        function handlebuttonclicked(){
-           const newUser={
-            // name:Inputs.visiteur,
-            // age:Inputs.id,
-            // prix: Number(prix),
-            // daysnumber:Number(Days.dayNumber),
-            // id:Date.now()
+function handlebuttonclicked() {
+    const calculatedTotal = Number(prix) * Number(Days.dayNumber);
+    console.log(calculatedTotal)
+    const newUser = {
+        id: uuidv4(),
+        Visiteur: Inputs.visiteur,
+        Passeport: Inputs.passeport,
+        Tel: Inputs.tel,
+        Chambre: Inputs.chambre,
+        Type: Inputs.type,
+        Arrive: Inputs.arrive,
+        Depart: Inputs.depart,
+        Prix: Number(prix),
+        Nights: Number(Days.dayNumber),
+        Total:calculatedTotal
 
+    };
+    
+    sendToServer(newUser);
 
-            visiteur: Inputs.visiteur,
-            passeport: Inputs.passeport,
-            tel: Inputs.tel,
-            chambre: Inputs.chambre,
-            type: Inputs.type,
-            arrive: Inputs.arrive,
-            depart: Inputs.depart,
-            prix: Number(prix),
-            daysnumber: Number(Days.dayNumber),
-            id:uuidv4()
-            }
-            
-            sendToServer(newUser);
-
-    //    console.log("this is new user", newUser)
-           const Updated=[...Users,newUser]
-           setUsers(Updated)
-           setInputs({visiteur:"",passeport:"",tel:"",id:"",chambre:"",type:"",daysnumber:"",arrive:"",depart:"",prixnuit:""})
-        
-        }
+    const Updated = [...Users, newUser];
+    setUsers(Updated);
+        setInputs({visiteur:"", passeport:"", tel:"", id:"", chambre:"", type:"", daysnumber:"", arrive:"", depart:"", prixnuit:""});
+}
         function calculTotal(arrive,depart){
             if (!arrive || !depart) return 0;
             const newDatearrive = new Date(arrive)
@@ -199,7 +199,7 @@ const response = await fetch("http://127.0.0.1:8000/api/reservations", {
         </div>
         <button onClick={handlebuttonclicked}>save</button>
         <Box sx={{overflow:"auto",maxHeight:"190px"}}>
-            {UsersList }
+            {/* {UsersList } */}
         </Box>
         
         

@@ -7,7 +7,7 @@ export default function Dashboard() {
     totalReservations: 0,
     totalRevenue: 0,
   });
-
+console.log("lklklk",stats)
 useEffect(() => {
     const token = localStorage.getItem('token'); 
 
@@ -19,8 +19,13 @@ useEffect(() => {
       .then((res) => {
         if (res.data.status === "success") {
           const reservations = res.data.data;
-          const revenue = reservations.reduce((sum, item) => sum + (Number(item.Total) || 0), 0);
-          
+const revenue = reservations.reduce((sum, item) => {
+              const price = Number(item.Prix) || Number(item.prix) || 0; 
+              const nights = Number(item.Nights) || Number(item.daysnumber) || 0;
+              const itemTotal = Number(item.Total) > 0 ? Number(item.Total) : (price * nights);
+              
+              return sum + itemTotal;
+              }, 0);
           setStats({
             totalReservations: reservations.length,
             totalRevenue: revenue
@@ -29,6 +34,9 @@ useEffect(() => {
       })
      
   }, []);
+  
+  console.log('11111',stats);
+  
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
       <Typography variant="h4" gutterBottom sx={{ color: 'text.secondary', fontWeight: 'bold', mb: 4 }}>

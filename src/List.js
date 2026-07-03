@@ -35,18 +35,25 @@ const fetchReservations = () => {
   };
 
 
-  const handleDelete = (id) => {
-    console.log(id)
-    axios.delete("http://127.0.0.1:8000/api/reservations", { data: { id } })
+const handleDelete = (id) => {
+    const token = localStorage.getItem('token');
+    console.log("pjppjpjp", id);
+    axios.delete("http://127.0.0.1:8000/api/reservations", { 
+      data: { id: id },
+      headers: {
+        Authorization: `Bearer ${token}` 
+      }
+    })
       .then((res) => {
         if (res.data.status === "success") {
-
           setReservations(reservations.filter(r => r.id !== id));
         } else {
-          alert("erroe");
+          alert("error");
         }
       })
-   
+      .catch((err) => {
+        console.error("error423", err);
+      });
   };
 console.log(reservations)
   const UsersList =reservations.map(user => (

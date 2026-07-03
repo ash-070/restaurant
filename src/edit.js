@@ -27,6 +27,14 @@ export default function Edit(){
     Nights: "",
     Total: ""
   });
+  function calculTotal(arrive, depart) {
+        if (!arrive || !depart) return 0;
+        const newDatearrive = new Date(arrive);
+        const newDatedepart = new Date(depart);
+        const dateDiff = newDatedepart - newDatearrive;
+        const daysDiff = dateDiff / (1000 * 60 * 60 * 24);
+        return daysDiff > 0 ? daysDiff : 0;
+    }
     //  function calculTotal(arrive,depart){
     //         if (!arrive || !depart) return 0;
     //         const newDatearrive = new Date(arrive)
@@ -36,19 +44,31 @@ export default function Edit(){
     //         return daysDiff
     //     }
 useEffect(() => {
-    const token = localStorage.getItem('token'); 
+        const token = localStorage.getItem('token'); 
 
-    axios.get(`http://127.0.0.1:8000/api/reservations/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}` 
-      }
-    })
-      .then((res) => {
-        if (res.data.status === "success" && res.data.data.length > 0) {
-          setUser(res.data.data[0]); 
-        }
-      })
-  }, [id]);
+        axios.get(`http://127.0.0.1:8000/api/reservations/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}` 
+            }
+        })
+        .then((res) => {
+            if (res.data.status === "success" && res.data.data.length > 0) {
+                const fetchedData = res.data.data[0];
+                setUser(fetchedData);
+                
+                setInputs({
+                    visiteur: fetchedData.Visiteur || "",
+                    passeport: fetchedData.Passeport || "",
+                    tel: fetchedData.Tel || "",
+                    chambre: fetchedData.Chambre || "",
+                    type: fetchedData.Type || "",
+                    arrive: fetchedData.Arrive || "",
+                    depart: fetchedData.Depart || ""
+                });
+                SetPrice(fetchedData.Prix || "");
+            }
+        })
+    }, [id]);
   function HandleVisiteurChange(e){
     setInputs({...Inputs,visiteur:e.target.value})
   }
